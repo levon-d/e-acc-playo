@@ -7,6 +7,7 @@ from firebase_admin import initialize_app, firestore
 import google.cloud.firestore
 from openai import OpenAI
 import settings as settings
+from elevenlabs import voices, generate
 
 app = initialize_app()
 chat_gpt_client = OpenAI()
