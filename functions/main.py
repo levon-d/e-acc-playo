@@ -3,7 +3,8 @@
 # Deploy with `firebase deploy`
 
 from firebase_functions import https_fn
-from firebase_admin import initialize_app
+from firebase_admin import initialize_app, firestore
+import google.cloud.firestore
 from openai import OpenAI
 import settings
 
@@ -14,12 +15,12 @@ chat_gpt_client = OpenAI(api_key=settings.OPENAI_API_KEY)
 #
 #
 @https_fn.on_request()
-def on_request_example(req: https_fn.Request) -> https_fn.Response:
+def trythis(req: https_fn.Request) -> https_fn.Response:
     text = req.args.get("text")
     theme = req.args.get("theme")
-    age_rating = req.args.get("ageRating")
+    age_rating = req.args.get("age_rating")
     # story_line = req.args.get("storyLine")
-    word_count = req.args.get("wordCount")
+    word_count = req.args.get("word_ount")
 
     completion = chat_gpt_client.chat.completions.create(
         model="gpt-4",
