@@ -54,12 +54,30 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
         ],
     )
 
+
     response_story = completion.choices[0].message.content
+    pattern = r"Title: (.+?)"
+
+    # Use re.search to find the match in the input string
+    match = re.search(pattern, input_string)
+
+    if match:
+        title = match.group(1)
+        print("Title:", title)
+    else:
+        title = ""
+        print("Title not found.")
+
+
     response_character = generate_characters_json(response_story)
     print(response_story)
     print(response_character)
+    
+    response_object = {"story": response_story, "characters": response_character, "narrator_voice": "", "storyId":title}
 
-    response_object = {"story": response_story, "characters": response_character}
+    db_doc = doc_ref.add(response_object)
+
+    response_object["document_id"] = db_doc.id
 
     return https_fn.Response.json(response_object)
 
