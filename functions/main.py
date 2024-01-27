@@ -6,6 +6,7 @@ import firebase_admin
 import google.cloud
 import google.cloud.firestore
 import re
+import json
 
 # import settings as settings
 from firebase_functions import https_fn
@@ -72,13 +73,14 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
 
     response_object = {
         "story": response_story,
-        "characters": response_character,
+        "characters": json.loads(response_character),
         "narrator_voice": "",
         "storyId": title,
     }
 
     db_doc = doc_ref.add(response_object)
-    response_object["document_id"] = db_doc.id
+    print("db_doc:", db_doc)
+    response_object["document_id"] = db_doc[1].id
 
     return https_fn.Response(response_object)
 
