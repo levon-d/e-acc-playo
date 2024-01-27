@@ -3,11 +3,11 @@
 # Deploy with `firebase deploy`
 
 from firebase_functions import https_fn
-from firebase_admin import initialize_app, firestore
+from firebase_admin import initialize_app, firestore, db, storage
 import google.cloud.firestore
 from openai import OpenAI
 import settings as settings
-from elevenlabs import voices, generate
+from elevenlabs import generate, voices
 
 app = initialize_app()
 chat_gpt_client = OpenAI()
@@ -61,3 +61,26 @@ def generate_characters_json(story: str) -> str:
     response = completion.choices[0].message.content
 
     return response
+
+@https_fn.on_request()
+def generate_narration(req: https_fn.Request) -> https_fn.Response:
+    data = req.get_json()
+    voice_id = data.get("voice_id")
+    # story_id = data.get("story_id")
+    document_id = data.get("document_id")
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+    story = firestore_client.collection("stories").document(document_id).get().to_dict()
+    audio = generate(
+        text=story.story,
+        voice=voice_id
+    )
+    audio_data = audio.data
+
+    # upload to firebase storage
+    bucket = storage.bucket()
+    blob = bucket.blob(f"{story.id}/{document_id}.mp3")
+    blob.upload_from_string(audio_data, content_type="audio/mpeg")
+
+    print("Audio file successfully uploaded to firebase storage")
+
+    
