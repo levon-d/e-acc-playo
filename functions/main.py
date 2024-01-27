@@ -16,7 +16,8 @@ chat_gpt_client = OpenAI()
 
 # firestore database
 cred = credentials.Certificate("./ServiceAccountKey.json")
-app = firebase_admin.initialize_app(cred)
+# firebase app
+app = initialize_app(cred, {"storageBucket": "playo-913ea.appspot.com"})
 db = firestore.client()
 doc_ref = db.collection("stories")
 # doc_ref = db.collection("stories").limit(2)
@@ -29,9 +30,6 @@ except google.cloud.exceptions.NotFound:
 
 # firebase storage
 bucket = storage.bucket()
-
-# firebase app
-app = initialize_app(cred, {"storageBucket": "playo-913ea.appspot.com"})
 
 
 # generate story from inputs and return json of story & character descriptions
@@ -54,7 +52,6 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
         ],
     )
 
-
     response_story = completion.choices[0].message.content
     pattern = r"Title: (.+?)"
 
@@ -68,15 +65,18 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
         title = ""
         print("Title not found.")
 
-
     response_character = generate_characters_json(response_story)
     print(response_story)
     print(response_character)
-    
-    response_object = {"story": response_story, "characters": response_character, "narrator_voice": "", "storyId":title}
+
+    response_object = {
+        "story": response_story,
+        "characters": response_character,
+        "narrator_voice": "",
+        "storyId": title,
+    }
 
     db_doc = doc_ref.add(response_object)
-
     response_object["document_id"] = db_doc.id
 
     return https_fn.Response.json(response_object)
