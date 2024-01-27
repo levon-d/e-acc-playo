@@ -5,6 +5,7 @@
 import firebase_admin
 import google.cloud
 import google.cloud.firestore
+import re
 
 # import settings as settings
 from firebase_functions import https_fn
@@ -56,7 +57,7 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
     pattern = r"Title: (.+?)"
 
     # Use re.search to find the match in the input string
-    match = re.search(pattern, input_string)
+    match = re.search(pattern, response_story)
 
     if match:
         title = match.group(1)
@@ -79,7 +80,7 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
     db_doc = doc_ref.add(response_object)
     response_object["document_id"] = db_doc.id
 
-    return https_fn.Response.json(response_object)
+    return https_fn.Response(response_object)
 
 
 # generate character descriptions from story
