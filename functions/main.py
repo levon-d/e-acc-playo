@@ -12,15 +12,14 @@ app = initialize_app()
 chat_gpt_client = OpenAI()
 
 
-#
-#
+# generate story from inputs
 @https_fn.on_request()
-def trythis(req: https_fn.Request) -> https_fn.Response:
+def generate_story(req: https_fn.Request) -> https_fn.Response:
     text = req.args.get("text")
     theme = req.args.get("theme")
     age_rating = req.args.get("age_rating")
     # story_line = req.args.get("storyLine")
-    word_count = req.args.get("word_ount")
+    word_count = req.args.get("word_count")
 
     completion = chat_gpt_client.chat.completions.create(
         model="gpt-4",
@@ -32,7 +31,7 @@ def trythis(req: https_fn.Request) -> https_fn.Response:
             },
         ],
     )
-    response = completion.choices[0].message 
+    response = completion.choices[0].message
     print(completion.choices[0].message)
 
-    return https_fn.Response(response)
+    return https_fn.Response(response.content)
