@@ -5,3 +5,4 @@ functions/__pycache__/
 functions/__pycache__/*
 firestore-debug.log
 ui-debug.log
+ServiceAccountKey.json
