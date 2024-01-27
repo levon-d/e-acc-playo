@@ -6,10 +6,10 @@ from firebase_functions import https_fn
 from firebase_admin import initialize_app, firestore
 import google.cloud.firestore
 from openai import OpenAI
-import settings
+import settings as settings
 
 app = initialize_app()
-chat_gpt_client = OpenAI(api_key=settings.OPENAI_API_KEY)
+chat_gpt_client = OpenAI()
 
 
 #

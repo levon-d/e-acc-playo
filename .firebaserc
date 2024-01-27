@@ -1,7 +1,5 @@
 {
   "projects": {
-    "prod": "playo-913ea"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "playo-913ea"
+  }
 }

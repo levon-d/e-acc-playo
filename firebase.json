@@ -1,10 +1,18 @@
 {
-    "hosting": {
-      "public": "public",
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
       "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
+        "venv",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
       ]
     }
+  ]
 }
