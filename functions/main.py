@@ -55,7 +55,7 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
     )
 
     response_story = completion.choices[0].message.content
-    pattern = r"Title: (.+?)"
+    pattern = r'Title: (.*?)(?:\n|$)'
 
     # Use re.search to find the match in the input string
     match = re.search(pattern, response_story)
