@@ -4,10 +4,24 @@
 
 from firebase_functions import https_fn
 from firebase_admin import initialize_app
+from openai import OpenAI
+import settings
 
-# initialize_app()
+app = initialize_app()
+chat_gpt_client = OpenAI(
+    api_key = settings.OPENAI_API_KEY
+)
+
+
 #
 #
-# @https_fn.on_request()
-# def on_request_example(req: https_fn.Request) -> https_fn.Response:
-#     return https_fn.Response("Hello world!")
+@https_fn.on_request()
+def on_request_example(req: https_fn.Request) -> https_fn.Response:
+    text = req.args.get("text")
+    age_rating = req.args.get("ageRating")
+    story_line = req.args.get("sotyLine")
+    word_count = req.args.get("wordCount")
+
+
+
+    return https_fn.Response("Hello world!")
