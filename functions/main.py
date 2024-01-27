@@ -32,14 +32,19 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
         ],
     )
 
-    response = completion.choices[0].message
-    print(completion.choices[0].message)
+    response_story = completion.choices[0].message.content
+    response_character = generate_characters_json(response_story)
+    print(response_story)
+    print(response_character)
+    
+    response_object = {
+        "story": response_story,
+        "characters": response_character
+    }
 
-    return https_fn.Response(response.content)
+    return https_fn.Response(response_object)
 
-def generate_characters_json(req: https_fn.Request) -> https_fn.Response:
-    data = req.get_json()
-    story = data.get("story")
+def generate_characters_json(story: str) -> str:
 
     completion = chat_gpt_client.chat.completions.create(
         model="gpt-4",
@@ -47,12 +52,11 @@ def generate_characters_json(req: https_fn.Request) -> https_fn.Response:
             {"role": "system", "content": "You are a world class story writer/author."},
             {
                 "role": "user",
-                "content": f"given the following story, give a general description of each character, as well as their age and gender. Format the response as a JSON. Here is the story: \"{story}\"",
+                "content": f"given the following story, give a general description of each character, as well as their age and gender. Format the response as a list JSON. The list should have the following structure: \n [ \n {{ \n \"name\": ..., \n \"description\": ..., \n \"voice_description\": ..., \n \"age\": ..., \n \"gender\": ... \n }}, \n ... \n ] \n\n Here is the story: \"{story}\"",
             },
         ],
     )
 
-    response = completion.choices[0].message
-    print(completion.choices[0].message)
+    response = completion.choices[0].message.content
 
-    return https_fn.Response(response.content)
+    return response
