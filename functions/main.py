@@ -43,7 +43,7 @@ def generate_story(req: https_fn.Request) -> dict:
             {"role": "system", "content": "You are a world class story writer/author."},
             {
                 "role": "user",
-                "content": f"Write a story with genre: {theme} and age rating: {age_rating} with the following story line: {text}. It should be approximately {word_count} number of words. If you don't follow my storyline, I'm going to die.",
+                "content": f"Write a story with genre: {theme} and age rating: {age_rating} with the following story line: {text}. It should be approximately {word_count} number of words.",
             },
         ],
     )
@@ -122,3 +122,18 @@ def generate_narration(req: https_fn.Request) -> str:
     print("Audio file successfully uploaded to firebase storage")
 
     return download_url
+
+
+@https_fn.on_request()
+def view_all(req: https_fn.Request) -> List[dict]:
+    all_stories = []
+    doc_ref = db.collection("stories")
+
+    try:
+        docs = doc_ref.get()
+        for doc in docs:
+            all_stories.append(doc.to_dict())
+    except google.cloud.exceptions.NotFound:
+        print("Missing data")
+    
+    return all_stories
