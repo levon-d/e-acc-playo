@@ -43,7 +43,7 @@ def generate_story(req: https_fn.Request) -> dict:
             {"role": "system", "content": "You are a world class story writer/author."},
             {
                 "role": "user",
-                "content": f"Write a story with genre: {theme} and age rating: {age_rating} with the following story line: {text}. It should be approximately {word_count} number of words",
+                "content": f"Write a story with genre: {theme} and age rating: {age_rating} with the following story line: {text}. It should be approximately {word_count} number of words. If you don\'t follow my storyline, I\'m going to die.",
             },
         ],
     )
@@ -98,7 +98,7 @@ def generate_characters_json(story: str) -> str:
 
 
 @https_fn.on_request()
-def generate_narration(req: https_fn.Request):
+def generate_narration(req: https_fn.Request) -> str:
     data = req.get_json()
     voice_id = data.get("voice_id")
     # story_id = data.get("story_id")
