@@ -98,7 +98,7 @@ def generate_characters_json(story: str) -> str:
 
 
 @https_fn.on_request()
-def generate_narration(req: https_fn.Request) -> https_fn.Response:
+def generate_narration(req: https_fn.Request):
     data = req.get_json()
     voice_id = data.get("voice_id")
     # story_id = data.get("story_id")
@@ -114,7 +114,11 @@ def generate_narration(req: https_fn.Request) -> https_fn.Response:
     # upload to firebase storage
     blob = bucket.blob(f"{story.id}/{document_id}.mp3")
     blob.upload_from_string(audio, content_type="audio/mpeg")
-
+    download_url = blob.generate_signed_url(
+        expiration=300,
+        method="GET",
+        version="v4",
+    )
     print("Audio file successfully uploaded to firebase storage")
 
-    return https_fn.Response()
+    return download_url
