@@ -21,14 +21,8 @@ cred = credentials.Certificate("./ServiceAccountKey.json")
 # firebase app
 app = initialize_app(cred, {"storageBucket": "playo-913ea.appspot.com"})
 db = firestore.client()
-doc_ref = db.collection("stories")
+# doc_ref = db.collection("stories")
 # doc_ref = db.collection("stories").limit(2)
-try:
-    docs = doc_ref.get()
-    for doc in docs:
-        print("Doc Data:{}".format(doc.to_dict()))
-except google.cloud.exceptions.NotFound:
-    print("Missing data")
 
 # firebase storage
 bucket = storage.bucket()
@@ -78,7 +72,7 @@ def generate_story(req: https_fn.Request) -> dict:
         "storyId": title,
     }
 
-    db_doc = doc_ref.add(response_object)
+    db_doc = db.collection("stories").add(response_object)
     print("db_doc:", db_doc)
     response_object["document_id"] = db_doc[1].id
 
@@ -110,13 +104,16 @@ def generate_narration(req: https_fn.Request) -> https_fn.Response:
     # story_id = data.get("story_id")
     document_id = data.get("document_id")
     firestore_client: google.cloud.firestore.Client = firestore.client()
-    story = firestore_client.collection("stories").document(document_id).get().to_dict()
-    audio = generate(text=story.story, voice=voice_id)
-    audio_data = audio.data
+
+    story = db.collection("stories").document(document_id)
+    story_data = story.get().to_dict()
+
+    audio = generate(text=story_data["story"], voice=voice_id)
+    # audio_data = audio.data
 
     # upload to firebase storage
     blob = bucket.blob(f"{story.id}/{document_id}.mp3")
-    blob.upload_from_string(audio_data, content_type="audio/mpeg")
+    blob.upload_from_string(audio, content_type="audio/mpeg")
 
     print("Audio file successfully uploaded to firebase storage")
 
