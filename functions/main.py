@@ -120,6 +120,7 @@ def generate_narration(req: https_fn.Request) -> str:
         version="v4",
     )
     print("Audio file successfully uploaded to firebase storage")
+    story.update({"audio_link": download_url})
 
     return download_url
 
