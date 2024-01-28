@@ -8,3 +8,4 @@ ui-debug.log
 ServiceAccountKey.json
 firebase-debug.log
 functions/__pycache__/main.cpython-311.pyc
+~/*
