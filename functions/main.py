@@ -36,7 +36,7 @@ bucket = storage.bucket()
 
 # generate story from inputs and return json of story & character descriptions
 @https_fn.on_request()
-def generate_story(req: https_fn.Request) -> https_fn.Response:
+def generate_story(req: https_fn.Request) -> str:
     data = req.get_json()
     text = data.get("text")
     theme = data.get("theme")
@@ -82,7 +82,7 @@ def generate_story(req: https_fn.Request) -> https_fn.Response:
     print("db_doc:", db_doc)
     response_object["document_id"] = db_doc[1].id
 
-    return https_fn.Response(response_object)
+    return str(response_object)
 
 
 # generate character descriptions from story
@@ -119,3 +119,5 @@ def generate_narration(req: https_fn.Request) -> https_fn.Response:
     blob.upload_from_string(audio_data, content_type="audio/mpeg")
 
     print("Audio file successfully uploaded to firebase storage")
+
+    return https_fn.Response()
