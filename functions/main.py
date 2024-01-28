@@ -36,7 +36,7 @@ bucket = storage.bucket()
 
 # generate story from inputs and return json of story & character descriptions
 @https_fn.on_request()
-def generate_story(req: https_fn.Request) -> str:
+def generate_story(req: https_fn.Request) -> dict:
     data = req.get_json()
     text = data.get("text")
     theme = data.get("theme")
@@ -55,7 +55,7 @@ def generate_story(req: https_fn.Request) -> str:
     )
 
     response_story = completion.choices[0].message.content
-    pattern = r'Title: (.*?)(?:\n|$)'
+    pattern = r"Title: (.*?)(?:\n|$)"
 
     # Use re.search to find the match in the input string
     match = re.search(pattern, response_story)
@@ -82,7 +82,7 @@ def generate_story(req: https_fn.Request) -> str:
     print("db_doc:", db_doc)
     response_object["document_id"] = db_doc[1].id
 
-    return str(response_object)
+    return response_object
 
 
 # generate character descriptions from story
