@@ -125,7 +125,7 @@ def generate_narration(req: https_fn.Request) -> str:
 
 
 @https_fn.on_request()
-def view_all(req: https_fn.Request) -> List[dict]:
+def view_all(req: https_fn.Request) -> list[dict]:
     all_stories = []
     doc_ref = db.collection("stories")
 
